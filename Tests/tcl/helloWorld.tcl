@@ -16,4 +16,10 @@ if { "$result" != "Hello World!" } {
     exit 1
 }
 
+set result [helloWorldCommand_ptr]
+if { "$result" != "Hello World!" } {
+    puts "Result: $result"
+    exit 1
+}
+
 puts "All tests passed successfully"

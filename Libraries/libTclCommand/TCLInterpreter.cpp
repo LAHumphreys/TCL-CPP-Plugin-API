@@ -3,8 +3,10 @@
 #include <cstring>
 #include <cstdlib>
 #include <cstdio>
+#include <type_traits>
 
 using namespace std;
+
 
 // Function signature of the standard function call...
 using TCL_CMD_FUNC = std::function<int(ClientData,Tcl_Interp* p_interp,int objc,Tcl_Obj* CONST objv[])>;
@@ -36,6 +38,19 @@ namespace {
         TCL_CMD_FUNC* f = reinterpret_cast<TCL_CMD_FUNC*>(proc);
 	return (*f)(proc,p_interp,objc,objv);
     }
+
+    /*
+     * Register a new procedure with TCL. Also register the call back to FreeCommand
+     * to clean up afterwards...
+     */
+    int CreateCommand(TCL_Interpreter* THIS, std::string name, TCL_CMD_FUNC* f) {
+        char * cmdName = const_cast<char *>(name.c_str());
+        ClientData proc_toinvoke = reinterpret_cast<ClientData>(f);
+    
+        Tcl_CreateObjCommand(THIS->Interp(), cmdName, CmdFunction, proc_toinvoke, FreeCommand);
+    
+        return TCL_OK;
+    }
 }
 
 TCL_Interpreter::TCL_Interpreter(Tcl_Interp* interpreter)
@@ -49,6 +64,28 @@ int TCL_Interpreter::PackageProvide(string name, string version) {
      char * packageVersion = const_cast<char *>(version.c_str());
 
      return Tcl_PkgProvide(this->interp, packageName, packageVersion);
+}
+
+int TCL_Interpreter::AddCommand( string name,
+                                 int (*fptr)(TCL_Interpreter&) ) 
+{
+
+    /*
+     * Create a wrapper function on the heap (its life is dynamic, and will be freed
+     * by a call to FreeCommand made by the tcl garbage collector)
+     */
+    TCL_CMD_FUNC* f = new TCL_CMD_FUNC([fptr] ( ClientData  clientData,
+                      Tcl_Interp* theInterp,
+                      int         objc,
+                      Tcl_Obj* CONST objv[]) -> int 
+        {
+            TCL_Interpreter interp(theInterp);
+	    (*fptr)(interp);
+            return TCL_OK;
+        });
+
+    return CreateCommand(this,name,f);
+
 }
 
 int TCL_Interpreter::AddCommand( string name,
@@ -69,13 +106,7 @@ int TCL_Interpreter::AddCommand( string name,
             proc(interp);
             return TCL_OK;
         });
-    // Because some miss-guided C programmers think they are too cool for const-safety...
-    char * cmdName = const_cast<char *>(name.c_str());
-    ClientData proc_toinvoke = reinterpret_cast<ClientData>(f);
-
-    Tcl_CreateObjCommand(this->interp, cmdName, CmdFunction, proc_toinvoke, FreeCommand);
-
-    return TCL_OK;
+    return CreateCommand(this,name,f);
 }
 
 void TCL_Interpreter::SetResult(std::string result) {

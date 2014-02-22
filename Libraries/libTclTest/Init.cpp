@@ -22,6 +22,7 @@ extern "C"
        std::function<int(TCL_Interpreter& interp)> func(HelloWorld);
 
        interp.AddCommand("helloWorldCommand",func);
+       interp.AddCommand("helloWorldCommand_ptr",HelloWorld);
 
        return interp.PackageProvide("Tcltest");
     }
