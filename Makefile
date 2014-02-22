@@ -1,4 +1,4 @@
-MAKE_DIRS= DEV_TOOLS Libraries
+MAKE_DIRS= DEV_TOOLS Libraries Tests
 
 # makefile tools library  for bulding multi-directory projects
 #
