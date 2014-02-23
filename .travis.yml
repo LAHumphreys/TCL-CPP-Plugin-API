@@ -8,7 +8,7 @@ before_install:
   - sudo apt-get install libboost-dev
   - sudo apt-get install libplplot-dev
   - sudo apt-get install libboost-filesystem-dev
-  - sudo pip install cpp-coveralls --user-mirrors
+  - sudo pip install cpp-coveralls --use-mirrors
 
 script: 
   - TOOL_CHAIN=TRAVIS make 
