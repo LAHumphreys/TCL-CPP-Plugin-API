@@ -1,57 +1,7 @@
 #include "TCLInterpreter.h"
-#include "tcl.h"
-#include <cstring>
-#include <cstdlib>
-#include <cstdio>
-#include <type_traits>
 
 using namespace std;
-
-
-// Function signature of the standard function call...
-using TCL_CMD_FUNC = std::function<int(ClientData,Tcl_Interp* p_interp,int objc,Tcl_Obj* CONST objv[])>;
-
-namespace {
-    /*
-     * Free a tcl command created on the heap. This will be called by 
-     * tcl's garbage collector when a command is destroyed
-     *
-     * f_todelete:   The std::function object which was to be invoked
-     *               when the command was called
-     */
-    static void FreeCommand( ClientData f_todelete) {
-        TCL_CMD_FUNC* f = reinterpret_cast<TCL_CMD_FUNC*>(f_todelete);
-        delete f;
-    }
-
-    /*
-     * We need a function which can be called by the c code using
-     * a standard function pointer. This sole purpose of this function 
-     * is to forward the arguemnts to dynamically created function...
-     *
-     */
-    static int CmdFunction ( ClientData proc,
-                             Tcl_Interp* p_interp,
-			     int objc,
-			     Tcl_Obj* CONST objv[])
-    {
-        TCL_CMD_FUNC* f = reinterpret_cast<TCL_CMD_FUNC*>(proc);
-	return (*f)(proc,p_interp,objc,objv);
-    }
-
-    /*
-     * Register a new procedure with TCL. Also register the call back to FreeCommand
-     * to clean up afterwards...
-     */
-    int CreateCommand(TCL_Interpreter* THIS, std::string name, TCL_CMD_FUNC* f) {
-        char * cmdName = const_cast<char *>(name.c_str());
-        ClientData proc_toinvoke = reinterpret_cast<ClientData>(f);
-    
-        Tcl_CreateObjCommand(THIS->Interp(), cmdName, CmdFunction, proc_toinvoke, FreeCommand);
-    
-        return TCL_OK;
-    }
-}
+using namespace TCL_INTERP_UTILS;
 
 TCL_Interpreter::TCL_Interpreter(Tcl_Interp* interpreter)
     : interp(interpreter) 
@@ -80,7 +30,7 @@ int TCL_Interpreter::AddCommand( string name,
                       Tcl_Obj* CONST objv[]) -> int 
         {
             TCL_Interpreter interp(theInterp);
-	    (*fptr)(interp);
+            (*fptr)(interp);
             return TCL_OK;
         });
 
@@ -115,4 +65,24 @@ void TCL_Interpreter::SetResult(std::string result) {
      message = strcpy(message,result.c_str());
 
      Tcl_SetResult(interp,message,TCL_DYNAMIC);
+}
+
+void TCL_Interpreter::SetResult(double result) {
+     Tcl_SetObjResult(interp,Tcl_NewDoubleObj(result));
+}
+
+void TCL_Interpreter::SetResult(int result) {
+     Tcl_SetObjResult(interp,Tcl_NewIntObj(result));
+}
+
+void TCL_Interpreter::SetResult(long result) {
+     Tcl_SetObjResult(interp,Tcl_NewLongObj(result));
+}
+
+void TCL_Interpreter::RaiseError(std::string error) {
+    throw TCL_Exception({std::move(error)});
+}
+
+void TCL_Interpreter::SetError(std::string error) {
+    Tcl_AppendResult(interp, error.c_str(), (char *)NULL);
 }
