@@ -6,5 +6,7 @@ before_install:
   - sudo apt-get install -qq gfortran-4.8
   - sudo apt-get install exuberant-ctags
   - sudo apt-get install libboost-dev
+  - sudo apt-get install libplplot-dev
+  - sudo apt-get install libboost-filesystem-dev
 
 script: TOOL_CHAIN=TRAVIS make 
