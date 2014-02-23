@@ -14,5 +14,5 @@ script:
   - TOOL_CHAIN=TRAVIS make 
   - TOOL_CHAIN=TRAVIS make clean
   - TOOL_CHAIN=TRAVIS make cover
-after:
+after_success:
   - coveralls
