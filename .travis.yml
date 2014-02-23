@@ -15,4 +15,4 @@ script:
   - TOOL_CHAIN=TRAVIS make clean
   - TOOL_CHAIN=TRAVIS make cover
 after_success:
-  - coveralls --gcov gcov-4.8 --verbose -e DEV_TOOLS/EXTERNAL_INCLUDES/GSL/
+  - coveralls --gcov gcov-4.8 --verbose -e DEV_TOOLS/EXTERNAL_INCLUDES/ -e DEV_TOOLS/EXTERNAL_LIBS/ -e Libraries/ -e TESTS -e DEV_TOOLS/CPP/Tests/ -e DEV_TOOLS/EXTERNAL_LIBS/
