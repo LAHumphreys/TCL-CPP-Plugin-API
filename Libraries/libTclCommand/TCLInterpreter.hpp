@@ -51,23 +51,13 @@ namespace TCL_INTERP_UTILS {
     /*
      * Type conversions we support...
      */
-    static int GetNativeType(TCL_Interpreter* THIS, Tcl_Obj* source, double& native) {
-        return Tcl_GetDoubleFromObj(THIS->Interp(),source,&native);
-    }
+    int GetNativeType(TCL_Interpreter* THIS, Tcl_Obj* source, double& native);
 
-    static int GetNativeType(TCL_Interpreter* THIS, Tcl_Obj* source, int& native) {
-        return Tcl_GetIntFromObj(THIS->Interp(),source,&native);
-    }
+    int GetNativeType(TCL_Interpreter* THIS, Tcl_Obj* source, int& native);
 
-    static int GetNativeType(TCL_Interpreter* THIS, Tcl_Obj* source, long& native) {
-        return Tcl_GetLongFromObj(THIS->Interp(),source,&native);
-    }
+    int GetNativeType(TCL_Interpreter* THIS, Tcl_Obj* source, long& native);
 
-    static int GetNativeType(TCL_Interpreter* THIS, Tcl_Obj* source, std::string& native) {
-        native = Tcl_GetStringFromObj(source,(int *)NULL);
-        // Everything in TCL is a string...
-        return TCL_OK;
-    }
+    int GetNativeType(TCL_Interpreter* THIS, Tcl_Obj* source, std::string& native);
 }
 
 template <class T>

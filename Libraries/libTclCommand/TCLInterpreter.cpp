@@ -3,6 +3,27 @@
 using namespace std;
 using namespace TCL_INTERP_UTILS;
 
+/*
+ * Type conversions we support...
+ */
+int TCL_INTERP_UTILS::GetNativeType(TCL_Interpreter* THIS, Tcl_Obj* source, double& native) {
+    return Tcl_GetDoubleFromObj(THIS->Interp(),source,&native);
+}
+
+int TCL_INTERP_UTILS::GetNativeType(TCL_Interpreter* THIS, Tcl_Obj* source, int& native) {
+    return Tcl_GetIntFromObj(THIS->Interp(),source,&native);
+}
+
+int TCL_INTERP_UTILS::GetNativeType(TCL_Interpreter* THIS, Tcl_Obj* source, long& native) {
+    return Tcl_GetLongFromObj(THIS->Interp(),source,&native);
+}
+
+int TCL_INTERP_UTILS::GetNativeType(TCL_Interpreter* THIS, Tcl_Obj* source, std::string& native) {
+    native = Tcl_GetStringFromObj(source,(int *)NULL);
+    // Everything in TCL is a string...
+    return TCL_OK;
+}
+
 TCL_Interpreter::TCL_Interpreter(Tcl_Interp* interpreter)
     : interp(interpreter) 
 {
