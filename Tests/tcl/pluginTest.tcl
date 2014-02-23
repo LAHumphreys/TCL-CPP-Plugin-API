@@ -1,4 +1,8 @@
-#!/usr/bin/env tclsh8.0
+#!/bin/sh
+# \
+$PROJECT_ROOT_DIR/tcl8.0.5/bin/tclsh8.0 $0
+# \
+exit
 
 #
 # Helper proc for validating error messages
