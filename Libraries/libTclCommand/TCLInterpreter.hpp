@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <type_traits>
+#include <tuple>
 
 // Function signature of the standard function call...
 using TCL_CMD_FUNC = std::function<int(ClientData,Tcl_Interp* p_interp,int objc,Tcl_Obj* CONST objv[])>;
@@ -32,7 +33,7 @@ namespace TCL_INTERP_UTILS {
                     Tcl_Obj* CONST objv[])
     {
         TCL_CMD_FUNC* f = reinterpret_cast<TCL_CMD_FUNC*>(proc);
-     return (*f)(proc,p_interp,objc,objv);
+         return (*f)(proc,p_interp,objc,objv);
     }
 
     /*
@@ -60,9 +61,12 @@ namespace TCL_INTERP_UTILS {
     int GetNativeType(TCL_Interpreter* THIS, Tcl_Obj* source, std::string& native);
 }
 
-template <class T>
+#include "TCL_foreach_in_tuple.h"
+#include "TCL_call_from_tuple.h"
+
+template <class ...T>
 int TCL_Interpreter::AddCommand( std::string name,
-                                 int (*fptr)(TCL_Interpreter&, T) ) 
+                                 int (*fptr)(TCL_Interpreter&, T...) ) 
 {
 
     /*
@@ -75,16 +79,24 @@ int TCL_Interpreter::AddCommand( std::string name,
                       Tcl_Obj* CONST objv[]) -> int 
         {
             int ret = TCL_OK;
-            T args;
             TCL_Interpreter interp(theInterp);
-            if ( objc != 2 ) {
+
+            std::tuple<T...> args;
+
+            // Check we have the right number of args...
+            if ( objc != (sizeof...(T)+1) ) {
                 Tcl_WrongNumArgs(theInterp, objc,objv,NULL);
                 ret = TCL_ERROR;
-            } else if ( TCL_INTERP_UTILS::GetNativeType(&interp,objv[1],args) != TCL_OK) {
-                ret = TCL_ERROR;
-            } else {
+            }
+
+            // Initialise the args...
+            if ( ret == TCL_OK ) {
+                ret = TCL_INTERP_UTILS::PopulateTuple(&interp, args, objv);
+            }
+
+            if ( ret == TCL_OK ) {
                 try {
-                    ret = (*fptr)(interp,args);
+                    ret = TCL_INTERP_UTILS::CallFromTuple(fptr,args,interp);
                 } catch ( TCL_Exception& error ) {
                     interp.SetError(error.msg);
                     ret = TCL_ERROR;
@@ -94,5 +106,4 @@ int TCL_Interpreter::AddCommand( std::string name,
         });
 
     return TCL_INTERP_UTILS::CreateCommand(this,name,f);
-
 }

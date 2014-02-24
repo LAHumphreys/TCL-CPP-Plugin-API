@@ -20,8 +20,8 @@ public:
      * Except a function taking sensible types and create a TCL 
      * command from it...
      */
-    template<class T>
-    int AddCommand( std::string name, int (*fptr)(TCL_Interpreter&, T ) );
+    template<class ...T>
+    int AddCommand( std::string name, int (*fptr)(TCL_Interpreter&, T... args ) );
 
     int AddCommand( std::string name, int (*fptr)(TCL_Interpreter&) );
     int AddCommand(std::string name,std::function<int(TCL_Interpreter&)>& proc);

@@ -166,5 +166,32 @@ if { $result != "Hi, Luke" } {
 #
 DemandError "SayHi -" "SayHi: You need to give me a name!"
 
+#
+# Check we can create a command that expects 
+# multiple Types
+#
+DemandError "Repeat" "wrong # args:"
+DemandError "Repeat string" "wrong # args:"
+DemandError "Repeat string 1 1" "wrong # args:"
 
-puts "All tests passed successfully"
+#
+# 2. Type checking...
+#    (remember in TCL, everything is a string...)
+#
+DemandError "Repeat 1 string" "expected integer"
+DemandError "Repeat 1 1.0" "expected integer"
+
+#
+# 3. Check command error...
+#
+DemandError {Repeat "Hello World!" -1} "must be a positive"
+
+
+set expected "Hello World!\nHello World!\nHello World!\nHello World!\n"
+
+set result [Repeat "Hello World!" 4]
+
+if {  $result != $expected } {
+   puts "Repeat, Result ($expected) : >$result<"
+   exit 1
+}
