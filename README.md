@@ -7,8 +7,14 @@ A small, type-safe, API is provided for writing c++ extensions is provided. Usin
 
 
 ```c++
-int SquareIt(TCL_Interpreter& interp, long num) {
-    interp.SetResult(num*num);
+static int Repeat(TCL_Interpreter& interp, string phrase, int times) {
+    stringstream result;
+
+    for ( int i =0; i< times; i++ ) {
+        result << phrase << endl;
+    }
+
+    interp.SetResult(result.str());
     return TCL_OK;
 }
 
@@ -16,9 +22,18 @@ extern "C"
 {
     int Tcltest_Init(Tcl_Interp* theInterpreter) {
        TCL_Interpreter interp(theInterpreter);
-       interp.AddCommand("SquareIt",SquareIt);
+       interp.AddCommand("Repeat",Repeat);
     }
 }
+```
+
+```TCL
+>>> package require Tcltest
+>>> puts [Repeat "Hello World!" 4]
+Hello World!
+Hello World!
+Hello World!
+Hello World!
 ```
 
 Readline Integration
