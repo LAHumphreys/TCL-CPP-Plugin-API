@@ -1,4 +1,4 @@
-A TCL extension API for C++11   [![Build Status](https://travis-ci.org/Grauniad/TCL-Readline.png?branch=master)](https://travis-ci.org/Grauniad/TCL-Readline)  [![Coverage Status](https://coveralls.io/repos/Grauniad/TCL-Readline/badge.png?branch=master)](https://coveralls.io/r/Grauniad/TCL-Readline?branch=master)
+A TCL extension API for C++11   [![Build Status](https://travis-ci.org/Grauniad/TCL-CPP-Plugin-API.png?branch=master)](https://travis-ci.org/Grauniad/TCL-CPP-Plugin-API)  [![Coverage Status](https://coveralls.io/repos/Grauniad/TCL-Readline/badge.png?branch=master)](https://coveralls.io/r/Grauniad/TCL-Readline?branch=master)
 ============
 
 Typesafe C++ Extensions
