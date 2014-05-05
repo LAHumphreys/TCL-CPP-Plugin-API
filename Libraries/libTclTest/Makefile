@@ -12,3 +12,4 @@ LINKED_LIBS=libTclCommand
 USE_TCL=YES
 
 include ../../makefile.include
+include ../../../makefile.include

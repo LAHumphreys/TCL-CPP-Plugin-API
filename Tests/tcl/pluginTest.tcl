@@ -1,6 +1,6 @@
 #!/bin/sh
 # \
-$PROJECT_ROOT_DIR/tcl8.0.5/bin/tclsh8.0 $0
+$PROJECT_ROOT_DIR/TCL-CPP-Plugin-API/tcl8.0.5/bin/tclsh8.0 $0
 # \
 exit
 

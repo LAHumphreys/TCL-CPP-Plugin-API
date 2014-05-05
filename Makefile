@@ -1,4 +1,4 @@
-MAKE_DIRS= DEV_TOOLS Libraries Tests
+MAKE_DIRS= Libraries Tests
 
 # makefile tools library  for bulding multi-directory projects
 #
@@ -11,3 +11,4 @@ makefile.include:
 	$(MAKE) -C DEV_TOOLS/Config/Makefiles/
 
 include makefile.include
+include ../makefile.include
