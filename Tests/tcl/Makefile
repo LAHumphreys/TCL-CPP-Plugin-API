@@ -1,4 +1,4 @@
-TEST_SCRIPTS=./pluginTest.tcl
+TEST_SCRIPTS=./pluginTest.tcl ./timeTest.tcl
 
 MODE=CPP
 
