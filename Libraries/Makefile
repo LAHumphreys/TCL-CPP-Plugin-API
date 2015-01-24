@@ -1,3 +1,3 @@
-MAKE_DIRS= libTclCommand libTclTest libTclTime
+MAKE_DIRS= libTclCommand libTclTest libTclTime libTclSignals
 
 include ../makefile.include

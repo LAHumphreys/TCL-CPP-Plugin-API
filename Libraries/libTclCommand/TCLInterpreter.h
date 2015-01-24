@@ -47,6 +47,15 @@ public:
 
     Tcl_Interp* Interp() { return interp; }
 
+    /**
+     * Evaluate the tcl script
+     *
+     * @param script The script to execute
+     *
+     * @returns The TCL exit code
+     */
+    int Eval(std::string script);
+
 private:
     Tcl_Interp* interp;
 

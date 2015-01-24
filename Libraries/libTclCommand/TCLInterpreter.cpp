@@ -107,3 +107,8 @@ void TCL_Interpreter::RaiseError(std::string error) {
 void TCL_Interpreter::SetError(std::string error) {
     Tcl_AppendResult(interp, error.c_str(), (char *)NULL);
 }
+
+int TCL_Interpreter::Eval(std::string script) {
+	char * scriptContent = const_cast<char*>(script.c_str());
+	return Tcl_Eval(Interp(),scriptContent);
+}
