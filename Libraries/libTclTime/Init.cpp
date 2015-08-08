@@ -51,8 +51,8 @@ static int CallStack(TCL_Interpreter& interp) {
     stringstream stack;
     std::vector<Event> events;
     callStack.GetEvents(events);
-    for ( Event& e : events ) {
-        stack << e.Info();
+    for ( std::vector<Event>::reverse_iterator it = events.rbegin(); it != events.rend(); ++it ) {
+        stack << it->Info();
     }
     interp.SetResult(stack.str());
     return TCL_OK;
